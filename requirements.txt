@@ -18,3 +18,5 @@ keras
 tensorflow
 tensorflow-intel
 tensorflow-io-gcs-filesystem
+tensorflow-gpu
+tensorrt
