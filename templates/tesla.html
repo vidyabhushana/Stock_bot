@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Analysis Chatbot</title>
+</head>
+<body>
+    <button id="openChatbot">Open Chatbot</button>
+
+    <!-- Chatbot Section -->
+    <div id="chatbotContainer" style="display: none;">
+        <div id="chatbotHeader">Stock Analysis Chatbot</div>
+        <div id="chatbotMessages"></div>
+        <!-- User input field and send button -->
+        <div id="userInputContainer">
+            <input type="text" id="userInput" placeholder="Type your message..." />
+            <button id="sendMessage">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("openChatbot").addEventListener("click", function() {
+            document.getElementById("chatbotContainer").style.display = "block";
+        });
+
+        function sendMessage() {
+            const userInput = document.getElementById("userInput").value;
+
+            if (userInput.trim() !== "") {
+                displayMessage("user", userInput);
+
+                // Prepare payload
+                const payload = {
+                    question: userInput
+                };
+
+                // Send POST request to the server
+                fetch("/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const answer = data.answer;
+                    displayMessage("bot", answer);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    displayMessage("bot", "Sorry, something went wrong.");
+                });
+
+                // Clear the user input
+                document.getElementById("userInput").value = "";
+            }
+        }
+
+        function displayMessage(sender, message) {
+            const messageContainer = document.getElementById("chatbotMessages");
+
+            const messageElement = document.createElement("div");
+            messageElement.classList.add(sender);
+            messageElement.innerText = message;
+
+            messageContainer.appendChild(messageElement);
+        }
+    </script>
+</body>
+</html>
